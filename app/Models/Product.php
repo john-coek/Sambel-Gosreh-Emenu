@@ -63,4 +63,14 @@ class Product extends Model
     {
         return $this->hasMany(TransactionDetail::class);
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }    
+
+    public function averageRating()
+    {
+        $this->reviews()->avg('rating');
+    }
 }

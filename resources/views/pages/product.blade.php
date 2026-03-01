@@ -5,12 +5,13 @@
     class="absolute top-0 left-0 right-0 flex items-center justify-between w-full px-5 py-3 z-10 bg-gradient-to-b from-black/80 to-transparent">
     <a href="{{ route('index', $store->username) }}"
       class="w-12 h-12 flex items-center justify-center shrink-0 rounded-full overflow-hidden bg-white/10">
-      <img src="{{ asset('assets/images/icons/ArrowLeft.svg') }}" class="w-8 h-8" alt="icon">
+      <img src="{{ asset('assets/images/icons/Arrow - Left.svg') }}" class="w-8 h-8" alt="icon">
     </a>
     <p class="font-semibold text-white">Details</p>
-    <button class="w-12 h-12 flex items-center justify-center shrink-0 rounded-full overflow-hidden bg-white/10">
+    <a href="{{ route('product.reviews', $product->id) }}"
+      class="w-12 h-12 flex items-center justify-center shrink-0 rounded-full overflow-hidden bg-white/10">
       <img src="{{ asset('assets/images/icons/Thumbs Up.svg') }}" alt="">
-    </button>
+    </a>
   </div>
 
   <div id="Image" class="relative w-full overflow-x-hidden -mb-[38px]">
@@ -38,9 +39,9 @@
       <div class="grid grid-cols-2 gap-3">
         @foreach ($product->productIngredients as $ingredient)
           <div class="flex items-center gap-2">
-          <img src="{{ asset('assets/images/icons/ic_check.svg') }}" alt="icon" class="w-5 h-5">
-          <span class="text-sm text-gray-600">{{ $ingredient->name }}</span>
-        </div>
+            <img src="{{ asset('assets/images/icons/ic_check.svg') }}" alt="icon" class="w-5 h-5">
+            <span class="text-sm text-gray-600">{{ $ingredient->name }}</span>
+          </div>
         @endforeach
       </div>
     </div>
@@ -49,91 +50,40 @@
 
       <div class="swiper w-full">
         <div class="swiper-wrapper">
-          <div class="swiper-slide !w-fit">
-            <div
-              class="flex flex-col gap-3 w-[320px] border border-gray-200 hover:border-[#F3AF00] hover:bg-[#FFF7F0] hover:cursor-pointer rounded-[8px] p-4">
-              <div class="flex items-center justify-between gap-3">
-                <h3 class="text-[#353535] font-[500] text-[14px]">Muhamad Rafli</h3>
+          @foreach ($product->reviews->sortByDesc('created_at') as $review)
+            <div class="swiper-slide !w-fit">
+              <div
+                class="flex flex-col gap-3 w-[320px] border border-gray-200 hover:border-[#F3AF00] hover:bg-[#FFF7F0] hover:cursor-pointer rounded-[8px] p-4">
 
-                <div class="flex items-center gap-1">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
+                <div class="flex items-center justify-between gap-3">
+                  <h3 class="text-[#353535] font-[500] text-[14px]">
+                    {{ $review->name }}
+                  </h3>
+
+                  <div class="flex items-center gap-1">
+                    @for ($i = 1; $i <= 5; $i++)
+                      @if ($i <= $review->rating)
+                        {{-- Bintang Aktif --}}
+                        <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
+                      @else
+                        {{-- Bintang Kosong (Opsional: berikan opacity agar terlihat beda) --}}
+                        <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating"
+                          class="w-4 h-4 opacity-20">
+                      @endif
+                    @endfor
+                  </div>
                 </div>
+
+                <p class="text-[#606060] font-[400] text-[14px]">
+                  {{ $review->comment }}
+                </p>
+
+                <span class="text-[#A0A0A0] text-[10px]">
+                  {{ $review->created_at->diffForHumans() }}
+                </span>
               </div>
-
-              <p class="text-[#606060] font-[400] text-[14px]">
-                The noodles were cooked just right, and the toppings were fresh and
-                generous. Definitely coming back for more
-              </p>
             </div>
-          </div>
-
-          <div class="swiper-slide !w-fit">
-            <div
-              class="flex flex-col gap-3 w-[320px] border border-gray-200 hover:border-[#F3AF00] hover:bg-[#FFF7F0] hover:cursor-pointer rounded-[8px] p-4">
-              <div class="flex items-center justify-between gap-3">
-                <h3 class="text-[#353535] font-[500] text-[14px]">Muhamad Rafli</h3>
-
-                <div class="flex items-center gap-1">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                </div>
-              </div>
-
-              <p class="text-[#606060] font-[400] text-[14px]">
-                The noodles were cooked just right, and the toppings were fresh and
-                generous. Definitely coming back for more
-              </p>
-            </div>
-          </div>
-          <div class="swiper-slide !w-fit">
-            <div
-              class="flex flex-col gap-3 w-[320px] border border-gray-200 hover:border-[#F3AF00] hover:bg-[#FFF7F0] hover:cursor-pointer rounded-[8px] p-4">
-              <div class="flex items-center justify-between gap-3">
-                <h3 class="text-[#353535] font-[500] text-[14px]">Muhamad Rafli</h3>
-
-                <div class="flex items-center gap-1">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                </div>
-              </div>
-
-              <p class="text-[#606060] font-[400] text-[14px]">
-                The noodles were cooked just right, and the toppings were fresh and
-                generous. Definitely coming back for more
-              </p>
-            </div>
-          </div>
-          <div class="swiper-slide !w-fit">
-            <div
-              class="flex flex-col gap-3 w-[320px] border border-gray-200 hover:border-[#F3AF00] hover:bg-[#FFF7F0] hover:cursor-pointer rounded-[8px] p-4">
-              <div class="flex items-center justify-between gap-3">
-                <h3 class="text-[#353535] font-[500] text-[14px]">Muhamad Rafli</h3>
-
-                <div class="flex items-center gap-1">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                  <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                </div>
-              </div>
-
-              <p class="text-[#606060] font-[400] text-[14px]">
-                The noodles were cooked just right, and the toppings were fresh and
-                generous. Definitely coming back for more
-              </p>
-            </div>
-          </div>
+          @endforeach
         </div>
       </div>
     </div>
@@ -146,7 +96,7 @@
           Menu Price
         </p>
         <p class="font-[600] text-[18px]">
-        Rp. {{ number_format($product->price) }}
+          Rp {{ number_format($product->price) }}
         </p>
       </div>
 
@@ -155,6 +105,5 @@
         Add To Cart
       </button>
     </div>
-  </div>
   </div>
 @endsection

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,3 +17,7 @@ Route::get('/{username}/customer-information', [TransactionController::class, 'c
 Route::get('{username}/checkout', [TransactionController::class, 'checkout'])->name('payment');
 Route::post('/{username}/checkout', [TransactionController::class, 'checkout'])->name('payment');
 Route::get('/transaction/success', [TransactionController::class, 'success'])->name('success');
+
+Route::get('/product/{id}/reviews', [ReviewController::class, 'index'])->name('product.reviews');
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
+Route::post('/product/{id}/review', [ProductController::class, 'reviewStore'])->name('review.store');

@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Product;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ProductCategory extends Model
 {
     use SoftDeletes;
-    
+
     protected $fillable = [
         'user_id',
         'name',
@@ -24,14 +23,15 @@ class ProductCategory extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            
             if (Auth::user()->role === 'store') {
                 $model->user_id = Auth::user()->id;
             }
+
+            $model->slug = Str::slug($model->name);
         });
+
         static::updating(function ($model) {
-            if(Auth::user()->role === 'store')
-            {
+            if (Auth::user()->role === 'store') {
                 $model->user_id = Auth::user()->id;
             }
 

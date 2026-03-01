@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -63,4 +64,22 @@ class ProductController extends Controller
 
         return view('pages.product', compact('store', 'product'));
     }
+
+    public function reviewStore(Request $request, $id)
+{
+    $request->validate([
+        'rating' => 'required|integer|min:1|max:5',
+        'comment' => 'required|string',
+        'name' => 'required|string|max:255',
+    ]);
+
+    Review::create([
+        'product_id' => $id,
+        'rating'     => $request->rating,
+        'comment'    => $request->comment, // Ubah dari 'content' ke 'comment'
+        'name'       => $request->name,    // Tambahkan ini agar nama tersimpan
+    ]);
+
+    return redirect()->back()->with('success', 'Ulasan berhasil dikirim!');
+}
 }

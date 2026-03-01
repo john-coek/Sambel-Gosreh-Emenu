@@ -23,7 +23,7 @@
       <label
         class="flex items-center w-full rounded-full p-[8px_8px] gap-3 bg-white ring-1 ring-[#F1F2F6] focus-within:ring-[#F3AF00] transition-all duration-300">
         <img src="{{ asset('assets/images/icons/ic_search.svg') }}" class="w-8 h-8 flex shrink-0" alt="icon">
-        <input type="text" name="search" id=""
+        <wire:model.live="search" name="search" id=""
           class="appearance-none outline-none w-full font-semibold placeholder:text-ngekos-grey placeholder:font-light"
           placeholder="Search menu, or etc...">
       </label>
