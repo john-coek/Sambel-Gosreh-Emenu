@@ -2,21 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
+use App\Filament\Resources\TransactionResource\Pages;
 use App\Models\Product;
+use App\Models\Transaction;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use App\Models\Transaction;
 use Filament\Resources\Resource;
-use Illuminate\Support\Facades\Auth;
-
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\TransactionResource\Pages;
-use App\Filament\Resources\TransactionResource\RelationManagers;
+use Illuminate\Support\Facades\Auth;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class TransactionResource extends Resource
 {
@@ -147,7 +145,13 @@ class TransactionResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                   Tables\Actions\DeleteBulkAction::make(),
+                
+                // Pastikan pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction sudah di-import di atas
+                ExportBulkAction::make()
+                    ->label('Ekspor ke Excel')
+                    ->color('success')
+                    ->icon('heroicon-o-document-arrow-down'),
                 ]),
             ]);
     }

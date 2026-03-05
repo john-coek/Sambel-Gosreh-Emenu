@@ -19,7 +19,7 @@
 
     <div class="absolute bottom-20 right-5 flex items-center gap-1  bg-white/10 px-[8px] py-[4px] rounded-full">
       <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-      <p class="text-white text-sm">{{ $product->rating }}</p>
+      <p class="text-white text-sm">{{ number_format($product->reviews->avg('rating') ?? 0, 1) }}</p>
     </div>
   </div>
 
@@ -45,45 +45,97 @@
         @endforeach
       </div>
     </div>
-    <div id="Reviews">
-      <h2 class="font-[500] mb-3">Customer Reviews</h2>
 
+    {{-- Form Review --}}
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
+        Berikan Ulasan Anda
+      </h2>
+
+      <form action="#" method="POST" class="space-y-4">
+        <div>
+          <label
+            class="block text-sm font-semibold text-gray-700 mb-1"
+            for="name"
+            >Nama Lengkap</label
+          >
+          <input
+            type="text"
+            id="name"
+            placeholder="Contoh: John Doe"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
+          />
+        </div>
+
+        <div>
+          <label
+            class="block text-sm font-semibold text-gray-700 mb-1"
+            for="message"
+            >Ulasan Anda</label
+          >
+          <textarea
+            id="message"
+            rows="4"
+            placeholder="Apa pendapat Anda tentang layanan kami?"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
+          ></textarea>
+        </div>
+
+        <button type="submit"
+          class="flex w-full justify-center rounded-full p-[14px_20px] bg-[#FF801A] font-bold text-white">Kirim</button>
+      </form>
+    </div>
+
+    <div id="Reviews">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-[500]">Customer Reviews</h2>
+
+        {{-- Ringkasan Rating --}}
+        <div class="flex items-center gap-2">
+          <div class="flex items-center">
+            @php
+              $averageRating = $product->reviews->avg('rating') ?? 0;
+
+              // Bulatkan rating ke angka terdekat (contoh: 4.6 => 5, 4.3 => 4)
+              $roundedRating = round($averageRating);
+
+              // Pastikan tidak lebih dari 5
+              $roundedRating = min($roundedRating, 5);
+            @endphp
+
+            {{-- Visualisasi Bintang 1-5 --}}
+            @for ($j = 1; $j <= 5; $j++)
+              <img src="{{ asset('assets/images/icons/ic_star.svg') }}"
+                class="w-4 h-4 {{ $j <= $roundedRating ? '' : 'opacity-20' }}" alt="star">
+            @endfor
+          </div>
+          <span class="text-sm font-bold text-[#353535]">{{ number_format($averageRating, 1) }}</span>
+          <span class="text-xs text-gray-400">({{ $product->reviews->count() }})</span>
+        </div>
+      </div>
+
+      {{-- Swiper Review Card --}}
       <div class="swiper w-full">
         <div class="swiper-wrapper">
-          @foreach ($product->reviews->sortByDesc('created_at') as $review)
+          @forelse ($product->reviews->sortByDesc('created_at') as $review)
             <div class="swiper-slide !w-fit">
               <div
-                class="flex flex-col gap-3 w-[320px] border border-gray-200 hover:border-[#F3AF00] hover:bg-[#FFF7F0] hover:cursor-pointer rounded-[8px] p-4">
-
+                class="flex flex-col gap-3 w-[320px] border border-gray-200 hover:border-[#F3AF00] hover:bg-[#FFF7F0] rounded-[8px] p-4 transition-all">
                 <div class="flex items-center justify-between gap-3">
-                  <h3 class="text-[#353535] font-[500] text-[14px]">
-                    {{ $review->name }}
-                  </h3>
-
-                  <div class="flex items-center gap-1">
-                    @for ($i = 1; $i <= 5; $i++)
-                      @if ($i <= $review->rating)
-                        {{-- Bintang Aktif --}}
-                        <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating" class="w-4 h-4">
-                      @else
-                        {{-- Bintang Kosong (Opsional: berikan opacity agar terlihat beda) --}}
-                        <img src="{{ asset('assets/images/icons/ic_star.svg') }}" alt="rating"
-                          class="w-4 h-4 opacity-20">
-                      @endif
-                    @endfor
-                  </div>
+                  <h3 class="text-[#353535] font-[500] text-[14px]">{{ $review->name }}</h3>
+                   <span style="color: #f39c12;">{{ str_repeat('★', $review->rating) }}{{ str_repeat('☆', 5 - $review->rating) }}</span>
                 </div>
-
-                <p class="text-[#606060] font-[400] text-[14px]">
-                  {{ $review->comment }}
+                <p class="text-[#606060] font-[400] text-[14px] line-clamp-2 italic">
+                  "{{ $review->comment }}"
                 </p>
-
                 <span class="text-[#A0A0A0] text-[10px]">
                   {{ $review->created_at->diffForHumans() }}
                 </span>
               </div>
             </div>
-          @endforeach
+          @empty
+            <p class="text-sm text-gray-400 italic">Belum ada ulasan untuk produk ini.</p>
+          @endforelse
         </div>
       </div>
     </div>
